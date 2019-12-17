@@ -19,6 +19,8 @@ def main():
     fp.close()
 
 def solve(path):
+    # inspired by https://github.com/kresimir-lukin/AdventOfCode2019/blob/master/day03.py#L9
+    # I first thought using 2d array but it's hard to deal with negative values for distances. However, hashmap solves this problem
     curr_x = curr_y = step = 0
     directions = {'R':(1,0), 'L':(-1,0), 'U':(0,1), 'D':(0,-1)}
     points = {}
