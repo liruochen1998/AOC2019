@@ -41,50 +41,21 @@ def machine(tape):
             index += 2
         # opcode == 5: jump if true
         if opcode == 5:
-            while len(digits) < 2:
-                digits = [0] + digits
-            pos1, pos2 = tape[index+1], tape[index+2]
-            arg1 = (pos1 if digits[1] == 1 else tape[pos1])
-            if arg1 != 0:
-                index = pos2 if digits[0] == 1 else tape[pos2]
-            else :
-                index += 3
+            index = decode_jump(tape, index, digits, 5)
+            
 
         # opcode == 6: jump if false
         if opcode == 6:
-            while len(digits) < 2:
-                digits = [0] + digits
-            pos1, pos2 = tape[index+1], tape[index+2]
-            arg1 = pos1 if digits[1] == 1 else tape[pos1]
-            if arg1 == 0:
-                index = pos2 if digits[0] == 1 else tape[pos2]
-            else :
-                index += 3
+            index = decode_jump(tape, index, digits, 6)
 
         # opcdde == 7: less than
         if opcode == 7:
-            while len(digits) < 3:
-                digits = [0] + digits
-            pos1, pos2, pos3 = tape[index+1], tape[index+2], tape[index+3]
-            arg1 = pos1 if digits[2] == 1 else tape[pos1]
-            arg2 = pos2 if digits[1] == 1 else tape[pos2]
-            if arg1 < arg2:
-                tape[pos3] = 1
-            else :
-                tape[pos3] = 0
+            decode_compare(tape, index, digits, 7)
             index += 4
 
         # opcode == 8: equals:
         if opcode == 8:
-            while len(digits) < 3:
-                digits = [0] + digits
-            pos1, pos2, pos3 = tape[index+1], tape[index+2], tape[index+3]
-            arg1 = pos1 if digits[2] == 1 else tape[pos1]
-            arg2 = pos2 if digits[1] == 1 else tape[pos2]
-            if arg1 == arg2:
-                tape[pos3] = 1
-            else :
-                tape[pos3] = 0
+            decode_compare(tape, index, digits, 8)
             index += 4
 
 
@@ -100,6 +71,35 @@ def decode_args(tape, index, digits, option):
         tape[pos3] = (pos1 if digits[2] == 1 else tape[pos1]) + (pos2 if digits[1] == 1 else tape[pos2])
     if option == 2:
         tape[pos3] = (pos1 if digits[2] == 1 else tape[pos1]) * (pos2 if digits[1] == 1 else tape[pos2])
+
+
+def decode_jump(tape, index, digits, option):
+    while len(digits) < 2:
+        digits = [0] + digits
+    pos1, pos2 = tape[index+1], tape[index+2]
+    arg1 = pos1 if digits[1] == 1 else tape[pos1]
+    arg2 = pos2 if digits[0] == 1 else tape[pos2]
+    
+    if arg1 != 0:
+        return arg2 if option == 5 else index + 3
+    else :
+        return arg2 if option == 6 else index + 3
+
+
+def decode_compare(tape, index, digits, option):
+    while len(digits) < 3:
+        digits = [0] + digits
+    pos1, pos2, pos3 = tape[index+1], tape[index+2], tape[index+3]
+    arg1 = pos1 if digits[2] == 1 else tape[pos1]
+    arg2 = pos2 if digits[1] == 1 else tape[pos2]
+    if arg1 < arg2 and option == 7:
+        tape[pos3] = 1
+    elif arg1 == arg2 and option == 8:
+        tape[pos3] = 1
+    else:
+        tape[pos3] = 0
+    
+    
 
 
 
